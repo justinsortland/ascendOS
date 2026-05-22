@@ -1,65 +1,113 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { DailyMissionCard } from '@/components/dashboard/DailyMissionCard'
+import { MomentumScoreCard } from '@/components/dashboard/MomentumScoreCard'
+import { XPLevelCard } from '@/components/dashboard/XPLevelCard'
+import { CommandCard } from '@/components/dashboard/CommandCard'
+import { TaskList } from '@/components/dashboard/TaskList'
+import { MinimumViableDayCard } from '@/components/dashboard/MinimumViableDayCard'
+import { BonusQuestsCard } from '@/components/dashboard/BonusQuestsCard'
+import { PomodoroCard } from '@/components/dashboard/PomodoroCard'
+import { AICoachPanel } from '@/components/dashboard/AICoachPanel'
+import { QuickAddModal } from '@/components/dashboard/QuickAddModal'
+import {
+  mockTasks,
+  mockCommandCards,
+  mockDailyMission,
+  mockAIMessages,
+  mockBonusQuests,
+  mockUserStats,
+} from '@/lib/mock-data'
+import { calculateMomentumScore, calculateXPEarned } from '@/lib/scoring'
+import type { Task } from '@/lib/types'
+
+const TODAY = new Date('2026-05-22').toLocaleDateString('en-US', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+})
+
+export default function DashboardPage() {
+  const [tasks, setTasks] = useState<Task[]>(mockTasks)
+  const [mission, setMission] = useState(mockDailyMission)
+
+  function toggleTask(id: string) {
+    setTasks(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t)))
+  }
+
+  function addTask(task: Omit<Task, 'id' | 'completed'>) {
+    setTasks(prev => [
+      ...prev,
+      { ...task, id: `custom-${Date.now()}`, completed: false },
+    ])
+  }
+
+  const momentum = calculateMomentumScore(tasks)
+  const xpEarned = calculateXPEarned(tasks)
+  const stats = { ...mockUserStats, xp: mockUserStats.xp + xpEarned, momentumScore: momentum }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="px-6 py-6 max-w-6xl">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-start justify-between mb-6"
+      >
+        <div>
+          <h1 className="text-xl font-black text-white tracking-tight">
+            Good morning, Justin.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <p className="text-sm text-slate-500 mt-0.5">{TODAY}</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="flex items-center gap-2">
+          <QuickAddModal onAdd={addTask} />
         </div>
-      </main>
+      </motion.div>
+
+      {/* Row 1: Mission + stats */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="col-span-2">
+          <DailyMissionCard
+            mission={mission}
+            onComplete={() => setMission(m => ({ ...m, completed: true }))}
+          />
+        </div>
+        <div className="space-y-4">
+          <MomentumScoreCard score={momentum} streakDays={stats.streakDays} />
+        </div>
+      </div>
+
+      {/* Row 2: XP + Command Cards */}
+      <div className="grid grid-cols-5 gap-4 mb-4">
+        <div className="col-span-1">
+          <XPLevelCard stats={stats} />
+        </div>
+        {mockCommandCards.map((card, i) => (
+          <div key={card.category} className="col-span-1">
+            <CommandCard card={card} index={i} />
+          </div>
+        ))}
+      </div>
+
+      {/* Row 3: Tasks + Side panel */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="col-span-2">
+          <TaskList tasks={tasks} onToggle={toggleTask} />
+        </div>
+        <div className="space-y-4">
+          <MinimumViableDayCard tasks={tasks} />
+          <AICoachPanel messages={mockAIMessages} />
+        </div>
+      </div>
+
+      {/* Row 4: Bonus + Pomodoro */}
+      <div className="grid grid-cols-2 gap-4">
+        <BonusQuestsCard quests={mockBonusQuests} />
+        <PomodoroCard />
+      </div>
     </div>
-  );
+  )
 }
