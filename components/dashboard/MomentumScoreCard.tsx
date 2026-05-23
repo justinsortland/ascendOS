@@ -29,10 +29,10 @@ export function MomentumScoreCard({ score, streakDays }: Props) {
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+          <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-slate-500">
             Momentum
           </p>
-          <p className="text-sm font-bold text-white mt-0.5">{label}</p>
+          <p className="font-display text-sm font-bold text-white mt-0.5">{label}</p>
         </div>
         <TrendingUp className="h-4 w-4 text-slate-500" />
       </div>
@@ -56,21 +56,21 @@ export function MomentumScoreCard({ score, streakDays }: Props) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-xl font-black text-white leading-none">{score}</span>
-            <span className="text-[9px] text-slate-500 font-medium">/ 100</span>
+            <span className="font-mono text-xl font-black text-white leading-none">{score}</span>
+            <span className="font-mono text-[9px] text-slate-500 font-medium">/ 100</span>
           </div>
         </div>
 
         <div className="space-y-2 flex-1">
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide">Streak</p>
-            <p className="text-lg font-black text-white leading-none">
+            <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wide">Streak</p>
+            <p className="font-mono text-lg font-black text-white leading-none">
               {streakDays}
               <span className="text-xs font-normal text-slate-400 ml-1">days</span>
             </p>
           </div>
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide">Today</p>
+            <p className="font-mono text-[10px] text-slate-500 uppercase tracking-wide">Today</p>
             <div className="flex gap-1 mt-1">
               {Array.from({ length: 7 }).map((_, i) => (
                 <div

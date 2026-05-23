@@ -57,9 +57,9 @@ export function DailyMissionCard({ mission, onComplete }: Props) {
             <Zap className="h-3 w-3 text-amber-400" />
             <span className="font-mono text-xs font-bold text-amber-400">+{mission.xp} XP</span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-slate-500">
+          <div className="flex items-center gap-1 text-slate-500">
             <Clock className="h-3 w-3" />
-            <span>By {mission.deadline}</span>
+            <span className="font-mono text-[11px]">By {mission.deadline}</span>
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@ export function DailyMissionCard({ mission, onComplete }: Props) {
       ) : (
         <div className="mt-4 flex items-center gap-2 text-xs text-emerald-400">
           <CheckCircle2 className="h-3.5 w-3.5" />
-          <span>Mission complete — {mission.xp} XP earned</span>
+          <span className="font-mono">Mission complete — {mission.xp} XP earned</span>
         </div>
       )}
     </motion.div>

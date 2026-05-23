@@ -82,7 +82,7 @@ export function CommandCard({ card, index }: Props) {
           />
         </div>
 
-        <p className="text-sm font-bold text-white">{card.title}</p>
+        <p className="font-display text-sm font-bold text-white">{card.title}</p>
 
         <div className="mt-3 space-y-2">
           {/* Progress bar */}
@@ -97,12 +97,12 @@ export function CommandCard({ card, index }: Props) {
           </div>
 
           <div className="flex items-center justify-between">
-            <span className={`text-[10px] font-medium ${c.color}`}>
-              {card.progress}% done
+            <span className={`font-mono text-[10px] font-medium ${c.color}`}>
+              {card.progress}%
             </span>
-            <div className="flex items-center gap-2 text-[10px] text-slate-500">
-              <span>🔥 {card.streak}d</span>
-              <span>+{card.xpPool} XP</span>
+            <div className="flex items-center gap-2 font-mono text-[10px] text-slate-500">
+              <span>{card.streak}d str</span>
+              <span>+{card.xpPool}</span>
             </div>
           </div>
         </div>

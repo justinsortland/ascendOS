@@ -31,8 +31,8 @@ export function MinimumViableDayCard({ tasks }: Props) {
           className={cn('h-4 w-4', complete ? 'text-emerald-400' : 'text-slate-500')}
         />
         <div>
-          <h3 className="text-xs font-bold text-white">Minimum Viable Day</h3>
-          <p className="text-[10px] text-slate-500">
+          <h3 className="font-display text-xs font-bold text-white">Min. Viable Day</h3>
+          <p className="font-mono text-[10px] text-slate-500">
             {done}/{nonNeg.length} non-negotiables
           </p>
         </div>

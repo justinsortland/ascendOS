@@ -49,7 +49,7 @@ export function AICoachPanel({ messages }: Props) {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-500/15 border border-violet-500/20">
             <Bot className="h-3.5 w-3.5 text-violet-400" />
           </div>
-          <span className="text-xs font-bold text-white">AI Coach</span>
+          <span className="font-display text-xs font-bold text-white">AI Coach</span>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -59,7 +59,7 @@ export function AICoachPanel({ messages }: Props) {
           >
             <ChevronLeft className="h-3 w-3" />
           </button>
-          <span className="text-[10px] text-slate-600">{index + 1}/{messages.length}</span>
+          <span className="font-mono text-[10px] text-slate-600">{index + 1}/{messages.length}</span>
           <button
             onClick={() => setIndex(i => Math.min(messages.length - 1, i + 1))}
             disabled={index === messages.length - 1}
@@ -83,7 +83,7 @@ export function AICoachPanel({ messages }: Props) {
             <Icon className={cn('h-3.5 w-3.5 flex-shrink-0 mt-0.5', cfg.color)} />
             <p className="text-xs text-slate-300 leading-relaxed">{msg.message}</p>
           </div>
-          <p className="text-[10px] text-slate-600 mt-2">{msg.timestamp}</p>
+          <p className="font-mono text-[10px] text-slate-600 mt-2">{msg.timestamp}</p>
         </motion.div>
       </AnimatePresence>
     </motion.div>

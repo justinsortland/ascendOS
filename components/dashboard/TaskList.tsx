@@ -51,10 +51,10 @@ function TierSection({ tier, tasks, onToggle }: TierSectionProps) {
       >
         <div className="flex items-center gap-2">
           <div className={`h-1.5 w-1.5 rounded-full ${cfg.dotColor}`} />
-          <span className={`text-xs font-semibold uppercase tracking-wider ${cfg.color}`}>
+          <span className={`font-mono text-[10px] font-medium uppercase tracking-wider ${cfg.color}`}>
             {cfg.label}
           </span>
-          <span className="text-[10px] text-slate-600">
+          <span className="font-mono text-[10px] text-slate-600">
             {done}/{tasks.length}
           </span>
         </div>
@@ -106,7 +106,7 @@ function TierSection({ tier, tasks, onToggle }: TierSectionProps) {
                   >
                     {task.category}
                   </Badge>
-                  <span className="text-[10px] text-slate-600">+{task.xp}</span>
+                  <span className="font-mono text-[10px] text-slate-600">+{task.xp}</span>
                 </div>
               </motion.button>
             ))}
@@ -137,14 +137,14 @@ export function TaskList({ tasks, onToggle }: Props) {
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-sm font-bold text-white">Today&apos;s Tasks</h2>
-          <p className="text-[10px] text-slate-500 mt-0.5">
+          <h2 className="font-display text-sm font-bold text-white">Today&apos;s Queue</h2>
+          <p className="font-mono text-[10px] text-slate-500 mt-0.5">
             {tasks.filter(t => t.completed).length}/{tasks.length} complete
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs font-bold text-amber-400">{xpEarned} XP</p>
-          <p className="text-[10px] text-slate-600">of {xpTotal} available</p>
+          <p className="font-mono text-xs font-bold text-amber-400">{xpEarned} XP</p>
+          <p className="font-mono text-[10px] text-slate-600">of {xpTotal} avail</p>
         </div>
       </div>
 

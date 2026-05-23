@@ -21,12 +21,12 @@ export function XPLevelCard({ stats }: Props) {
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+          <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-slate-500">
             Level
           </p>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-2xl font-black text-white">{stats.level}</span>
-            <span className="text-xs text-slate-400">{stats.rank}</span>
+            <span className="font-mono text-2xl font-black text-white">{stats.level}</span>
+            <span className="font-display text-xs font-semibold text-slate-400">{stats.rank}</span>
           </div>
         </div>
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20">
@@ -35,7 +35,7 @@ export function XPLevelCard({ stats }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <div className="flex justify-between text-[10px] text-slate-500">
+        <div className="flex justify-between font-mono text-[10px] text-slate-500">
           <span>{stats.xp.toLocaleString()} XP</span>
           <span>{stats.xpToNextLevel.toLocaleString()} to next</span>
         </div>

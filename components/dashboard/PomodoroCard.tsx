@@ -78,8 +78,8 @@ export function PomodoroCard() {
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-xs font-bold text-white">Focus Block</h3>
-          <p className="text-[10px] text-slate-500 mt-0.5">{sessions} session{sessions !== 1 ? 's' : ''} today</p>
+          <h3 className="font-display text-xs font-bold text-white">Focus Block</h3>
+          <p className="font-mono text-[10px] text-slate-500 mt-0.5">{sessions} session{sessions !== 1 ? 's' : ''} today</p>
         </div>
         <AnimatePresence mode="wait">
           <motion.div
@@ -87,7 +87,7 @@ export function PomodoroCard() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+            className={`font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
               phase === 'break'
                 ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
                 : phase === 'focus'

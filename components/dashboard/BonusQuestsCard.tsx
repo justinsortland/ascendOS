@@ -36,10 +36,10 @@ export function BonusQuestsCard({ quests: initial }: Props) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Trophy className="h-4 w-4 text-amber-400" />
-          <h3 className="text-xs font-bold text-white">Bonus Quests</h3>
+          <h3 className="font-display text-xs font-bold text-white">Bonus Objectives</h3>
         </div>
         {xpEarned > 0 && (
-          <span className="text-[10px] font-bold text-amber-400">+{xpEarned} XP earned</span>
+          <span className="font-mono text-[10px] font-bold text-amber-400">+{xpEarned} XP</span>
         )}
       </div>
 
@@ -70,7 +70,7 @@ export function BonusQuestsCard({ quests: initial }: Props) {
             >
               {quest.title}
             </span>
-            <span className={cn('text-[10px] font-semibold', categoryAccent[quest.category])}>
+            <span className={cn('font-mono text-[10px] font-semibold', categoryAccent[quest.category])}>
               +{quest.xp}
             </span>
           </motion.button>
