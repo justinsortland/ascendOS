@@ -34,8 +34,8 @@ export function Sidebar() {
           <Zap className="w-4 h-4 text-white" />
         </div>
         <div>
-          <span className="text-sm font-bold text-white tracking-wide">AscendOS</span>
-          <p className="text-[10px] text-slate-500 leading-none mt-0.5">v1.0.0</p>
+          <span className="font-display text-sm font-bold text-white tracking-wide">AscendOS</span>
+          <p className="font-mono text-[10px] text-slate-500 leading-none mt-0.5">v1.0.0</p>
         </div>
       </div>
 
@@ -78,8 +78,8 @@ export function Sidebar() {
             J
           </div>
           <div>
-            <p className="text-xs font-medium text-white">Justin</p>
-            <p className="text-[10px] text-slate-500">Ascendant II</p>
+            <p className="font-display text-xs font-semibold text-white">Justin</p>
+            <p className="font-mono text-[10px] text-slate-500 tracking-wide">ASCENDANT II</p>
           </div>
         </div>
       </div>

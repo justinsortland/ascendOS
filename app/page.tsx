@@ -57,10 +57,10 @@ export default function DashboardPage() {
         className="flex items-start justify-between mb-6"
       >
         <div>
-          <h1 className="text-xl font-black text-white tracking-tight">
-            Good morning, Justin.
+          <h1 className="font-display text-xl font-bold text-white tracking-tight">
+            System online, Justin.
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">{TODAY}</p>
+          <p className="font-mono text-[11px] text-slate-500 mt-0.5 tracking-wide">{TODAY}</p>
         </div>
         <div className="flex items-center gap-2">
           <QuickAddModal onAdd={addTask} />

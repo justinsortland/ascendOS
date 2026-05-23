@@ -30,7 +30,7 @@ export function DailyMissionCard({ mission, onComplete }: Props) {
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-400">
+              <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-violet-400">
                 Daily Mission
               </span>
               <Badge
@@ -42,7 +42,7 @@ export function DailyMissionCard({ mission, onComplete }: Props) {
             </div>
             <h3
               className={cn(
-                'text-base font-bold text-white',
+                'font-display text-base font-bold text-white',
                 mission.completed && 'line-through text-slate-400'
               )}
             >
@@ -55,7 +55,7 @@ export function DailyMissionCard({ mission, onComplete }: Props) {
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5">
             <Zap className="h-3 w-3 text-amber-400" />
-            <span className="text-xs font-bold text-amber-400">+{mission.xp} XP</span>
+            <span className="font-mono text-xs font-bold text-amber-400">+{mission.xp} XP</span>
           </div>
           <div className="flex items-center gap-1 text-xs text-slate-500">
             <Clock className="h-3 w-3" />
