@@ -228,3 +228,68 @@ export interface BrainInsight {
   message: string
   priority: 'high' | 'medium' | 'low'
 }
+
+// ─── Spirit module ───────────────────────────────────────────────
+
+export type MoodLevel = 'low' | 'neutral' | 'good' | 'great'
+export type SpiritEntryType = 'gratitude' | 'dream' | 'meditation' | 'visualization' | 'review'
+
+export interface GratitudeEntry {
+  id: string
+  date: string
+  prompt: string
+  content: string
+  moodBefore: MoodLevel
+  moodAfter: MoodLevel
+  tags: string[]
+}
+
+export interface DreamEntry {
+  id: string
+  date: string
+  title: string
+  description: string
+  lucidityLevel: number // 0–5
+  vividnessLevel: number // 0–5
+  emotionalTone: string
+  dreamSigns: string[]
+  realityCheckDone: boolean
+  lucidityAchieved: boolean
+}
+
+export interface MeditationSession {
+  id: string
+  date: string
+  durationMins: number
+  moodBefore: MoodLevel
+  moodAfter: MoodLevel
+  notes?: string
+  completed: boolean
+}
+
+export interface VisualizationSession {
+  id: string
+  date: string
+  desiredState: string
+  script?: string
+  completed: boolean
+  durationMins: number
+  notes?: string
+}
+
+export interface EveningReviewEntry {
+  id: string
+  date: string
+  wentWell: string
+  feltHeavy: string
+  avoided: string
+  toRepair: string
+  proudOf: string
+  anchorTask: string
+}
+
+export interface SpiritInsight {
+  id: string
+  message: string
+  priority: 'high' | 'medium' | 'low'
+}
