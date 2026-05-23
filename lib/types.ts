@@ -136,3 +136,95 @@ export interface WeeklyDay {
   sets: number
   trained: boolean
 }
+
+// ─── Brain module ───────────────────────────────────────────────
+
+export type ProjectStatus = 'active' | 'building' | 'planning' | 'paused' | 'shipped'
+export type ProjectPriority = 'high' | 'medium' | 'low'
+export type LeetCodeDifficulty = 'easy' | 'medium' | 'hard'
+export type LeetCodeStatus =
+  | 'not-started'
+  | 'attempted'
+  | 'solved-help'
+  | 'solved-independent'
+  | 'revisit'
+  | 'mastered'
+export type SkillNodeStatus = 'active' | 'needs-attention' | 'locked-in' | 'behind'
+
+export interface Project {
+  id: string
+  name: string
+  description: string
+  status: ProjectStatus
+  priority: ProjectPriority
+  currentSprint: string
+  nextTask: string
+  progress: number // 0–100
+  shipStreak: number
+  lastWorked: string
+  recentMilestones: string[]
+  githubUrl?: string
+  xp: number
+}
+
+export interface LeetCodeProblem {
+  id: string
+  title: string
+  difficulty: LeetCodeDifficulty
+  pattern: string
+  status: LeetCodeStatus
+  timeMins?: number
+  notes?: string
+  url?: string
+  solvedDate?: string
+}
+
+export interface LearningTrack {
+  id: string
+  name: string
+  icon: string
+  currentTopic: string
+  targetMins: number
+  completedMins: number
+  nextAction: string
+  skillLevel: number // 1–10
+  targetSessions?: number   // for session-based tracks (Zetamac)
+  completedSessions?: number
+}
+
+export interface VocabCard {
+  id: string
+  word: string
+  translation: string
+  example?: string
+  reviewed: boolean
+}
+
+export interface Book {
+  id: string
+  title: string
+  author: string
+  currentPage: number
+  totalPages: number
+  status: 'reading' | 'paused' | 'finished' | 'planned'
+  dailyGoalPages: number
+  readingStreak: number
+  todayPages: number
+  highlight?: string
+}
+
+export interface SkillNode {
+  id: string
+  name: string
+  icon: string
+  level: number
+  xp: number
+  progress: number // 0–100
+  status: SkillNodeStatus
+}
+
+export interface BrainInsight {
+  id: string
+  message: string
+  priority: 'high' | 'medium' | 'low'
+}
