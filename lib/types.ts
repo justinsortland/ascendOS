@@ -293,3 +293,119 @@ export interface SpiritInsight {
   message: string
   priority: 'high' | 'medium' | 'low'
 }
+
+// ─── Weekly module ───────────────────────────────────────────────
+
+export type WeeklyGoalCategory = 'body' | 'brain' | 'spirit' | 'execution'
+export type WeeklyGoalStatus = 'on-track' | 'behind' | 'complete' | 'not-started'
+export type GroceryCategory = 'protein' | 'carbs' | 'fats' | 'produce' | 'extras'
+
+export interface WeeklyGoal {
+  id: string
+  category: WeeklyGoalCategory
+  title: string
+  target: number
+  current: number
+  unit: string
+  priority: 'high' | 'medium' | 'low'
+  status: WeeklyGoalStatus
+}
+
+export interface WeeklyMealPrepIdea {
+  id: string
+  name: string
+  protein: number
+  calories: number
+  prepped: boolean
+}
+
+export interface GroceryItem {
+  id: string
+  name: string
+  category: GroceryCategory
+  purchased: boolean
+}
+
+export interface WeeklyWorkoutDay {
+  day: string
+  split: string
+  cardio: boolean
+  completed: boolean
+  notes?: string
+}
+
+export interface TechBlock {
+  id: string
+  name: string
+  type: 'project' | 'study'
+  target: number
+  completed: number
+  unit: string
+  color: string
+}
+
+export interface WeeklyResetItem {
+  id: string
+  label: string
+  category: 'body' | 'brain' | 'spirit' | 'execution' | 'general'
+  xp: number
+  estimatedMins: number
+  completed: boolean
+}
+
+export interface WeeklyReviewEntry {
+  id: string
+  date: string
+  wins: string
+  misses: string
+  heavy: string
+  momentum: string
+  reduce: string
+  repeat: string
+  adjustment: string
+  summary: string
+}
+
+// ─── Analytics module ───────────────────────────────────────────────
+
+export type Grade = 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-' | 'D' | 'F'
+
+export interface DailyMomentumPoint {
+  day: string
+  score: number
+}
+
+export interface NutritionDay {
+  day: string
+  calories: number
+  protein: number
+}
+
+export interface StudyMinutesData {
+  track: string
+  minutes: number
+  target: number
+  color: string
+}
+
+export interface Bottleneck {
+  id: string
+  name: string
+  severity: 'high' | 'medium' | 'low'
+  why: string
+  fix: string
+  category: 'body' | 'brain' | 'spirit' | 'execution'
+}
+
+export interface AnalyticsReportCard {
+  body: Grade
+  brain: Grade
+  spirit: Grade
+  execution: Grade
+  overall: Grade
+  biggestWin: string
+  biggestMiss: string
+  bestDay: string
+  worstDay: string
+  adjustment: string
+}
