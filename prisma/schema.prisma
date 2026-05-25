@@ -1,0 +1,511 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── User ────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String @default("Justin")
+  email String @unique @default("justin@ascendos.app")
+
+  level       Int    @default(1)
+  xp          Int    @default(0)
+  streakDays  Int    @default(0)
+  rank        String @default("Warming Up")
+
+  tasks               Task[]
+  bonusQuests         BonusQuest[]
+  pomodoroSessions    PomodoroSession[]
+  habits              Habit[]
+  meals               Meal[]
+  workoutSessions     WorkoutSession[]
+  cardioSessions      CardioSession[]
+  projects            Project[]
+  leetCodeProblems    LeetCodeProblem[]
+  learningTracks      LearningTrack[]
+  vocabCards          VocabCard[]
+  books               Book[]
+  journalEntries      JournalEntry[]
+  dreamEntries        DreamEntry[]
+  meditationSessions  MeditationSession[]
+  visualizations      VisualizationSession[]
+  eveningReviews      EveningReview[]
+  weeklyPlans         WeeklyPlan[]
+  xpEntries           XPEntry[]
+}
+
+// ─── Tasks / Execution ───────────────────────────────────────────
+
+model Task {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  tier      String // non-negotiable | enhancer | optional
+  category  String // body | brain | spirit | execution
+  xp        Int    @default(10)
+  completed Boolean @default(false)
+  date      DateTime @default(now()) // the day this task belongs to
+
+  @@index([userId, date])
+}
+
+model BonusQuest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  xp        Int    @default(25)
+  category  String
+  completed Boolean @default(false)
+  date      DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model PomodoroSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId        String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  focusMins     Int
+  breakMins     Int
+  completedAt   DateTime?
+  label         String? // what were you working on
+
+  @@index([userId, createdAt])
+}
+
+// ─── Body Module ────────────────────────────────────────────────
+
+model Habit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label       String
+  tier        String // core | enhancer | optional
+  tierLabel   String
+  duration    String @default("—")
+  description String @default("")
+  streak      Int    @default(0)
+
+  completions HabitCompletion[]
+
+  @@index([userId])
+}
+
+model HabitCompletion {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now()) @db.Date
+
+  @@unique([habitId, date])
+  @@index([habitId, date])
+}
+
+model MacroGoal {
+  id        String   @id @default(cuid())
+  userId    String   @unique // one row per user
+
+  calories  Int @default(2200)
+  protein   Int @default(180)
+  carbs     Int @default(220)
+  fat       Int @default(60)
+  waterOz   Int @default(128)
+  mode      String @default("cut") // cut | bulk | maintenance
+}
+
+model Meal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String
+  time      String
+  calories  Int
+  protein   Int
+  carbs     Int
+  fat       Int
+  source    String @default("manual") // manual | ai-estimate | restaurant | meal-prep
+  notes     String?
+  date      DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+model WorkoutSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  split               String // push | pull | legs | rest | upper | lower
+  name                String
+  date                DateTime @default(now()) @db.Date
+  estimatedCalories   Int      @default(0)
+  completed           Boolean  @default(false)
+
+  exercises ExerciseSet[]
+
+  @@index([userId, date])
+}
+
+model ExerciseSet {
+  id               String @id @default(cuid())
+  workoutSessionId String
+  session          WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+
+  exerciseName  String
+  setNumber     Int
+  reps          Int
+  weight        String
+  completed     Boolean @default(false)
+
+  @@index([workoutSessionId])
+}
+
+model CardioSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type              String
+  durationMins      Int
+  incline           Float?
+  speedMph          Float?
+  distanceMi        Float?
+  estimatedCalories Int    @default(0)
+  notes             String?
+  completed         Boolean @default(false)
+  date              DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+// ─── Brain Module ───────────────────────────────────────────────
+
+model Project {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name              String
+  description       String
+  status            String @default("active") // active | building | planning | paused | shipped
+  priority          String @default("high")   // high | medium | low
+  currentSprint     String @default("")
+  nextTask          String @default("")
+  progress          Int    @default(0)        // 0–100
+  shipStreak        Int    @default(0)
+  lastWorked        String @default("Today")
+  recentMilestones  String[] @default([])
+  githubUrl         String?
+  xp                Int    @default(0)
+
+  @@index([userId])
+}
+
+model LeetCodeProblem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  difficulty  String  // easy | medium | hard
+  pattern     String
+  status      String  @default("not-started")
+  timeMins    Int?
+  notes       String?
+  url         String?
+  solvedDate  String?
+
+  @@index([userId])
+}
+
+model LearningTrack {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name              String
+  icon              String
+  currentTopic      String
+  targetMins        Int    @default(60)
+  completedMins     Int    @default(0)
+  nextAction        String
+  skillLevel        Int    @default(1)
+  targetSessions    Int?
+  completedSessions Int?
+
+  sessions LearningSession[]
+
+  @@index([userId])
+}
+
+model LearningSession {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+
+  trackId         String
+  track           LearningTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  durationMins    Int
+  topic           String?
+  notes           String?
+
+  @@index([trackId, createdAt])
+}
+
+model VocabCard {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  word        String
+  translation String
+  example     String?
+  reviewed    Boolean @default(false)
+
+  @@index([userId])
+}
+
+model Book {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title           String
+  author          String
+  currentPage     Int    @default(0)
+  totalPages      Int
+  status          String @default("reading") // reading | paused | finished | planned
+  dailyGoalPages  Int    @default(20)
+  readingStreak   Int    @default(0)
+  todayPages      Int    @default(0)
+  highlight       String?
+
+  readingLogs ReadingLog[]
+
+  @@index([userId])
+}
+
+model ReadingLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  bookId    String
+  book      Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  pagesRead Int
+  date      DateTime @default(now()) @db.Date
+
+  @@index([bookId, date])
+}
+
+// ─── Spirit Module ──────────────────────────────────────────────
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  prompt      String
+  content     String
+  moodBefore  String @default("neutral") // low | neutral | good | great
+  moodAfter   String @default("neutral")
+  tags        String[] @default([])
+  date        DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+model DreamEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title              String
+  description        String
+  lucidityLevel      Int    @default(0)  // 0–5
+  vividnessLevel     Int    @default(0)  // 0–5
+  emotionalTone      String @default("neutral")
+  dreamSigns         String[] @default([])
+  realityCheckDone   Boolean @default(false)
+  lucidityAchieved   Boolean @default(false)
+  date               DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+model MeditationSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  durationMins  Int
+  moodBefore    String @default("neutral")
+  moodAfter     String @default("neutral")
+  notes         String?
+  completed     Boolean @default(false)
+  date          DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+model VisualizationSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  desiredState  String
+  script        String?
+  completed     Boolean @default(false)
+  durationMins  Int     @default(10)
+  notes         String?
+  date          DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+model EveningReview {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  wentWell    String
+  feltHeavy   String
+  avoided     String
+  toRepair    String
+  proudOf     String
+  anchorTask  String
+  date        DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
+
+// ─── Weekly Module ──────────────────────────────────────────────
+
+model WeeklyPlan {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  weekStart   DateTime @db.Date
+  weekEnd     DateTime @db.Date
+  theme       String   @default("Cut Cleanly")
+  mainFocus   String   @default("")
+
+  goals         WeeklyGoal[]
+  reviews       WeeklyReview[]
+
+  @@unique([userId, weekStart])
+  @@index([userId])
+}
+
+model WeeklyGoal {
+  id        String @id @default(cuid())
+
+  planId    String
+  plan      WeeklyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  category  String // body | brain | spirit | execution
+  title     String
+  target    Int
+  current   Int    @default(0)
+  unit      String
+  priority  String @default("medium")
+  status    String @default("not-started")
+
+  @@index([planId])
+}
+
+model WeeklyReview {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  planId    String
+  plan      WeeklyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  wins        String
+  misses      String
+  heavy       String
+  momentum    String
+  reduce      String
+  repeat      String
+  adjustment  String
+  summary     String
+
+  @@index([planId])
+}
+
+// ─── XP Log ─────────────────────────────────────────────────────
+
+model XPEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount    Int
+  source    String  // task | habit | leetcode | workout | journal | mission | bonus
+  label     String?
+  date      DateTime @default(now()) @db.Date
+
+  @@index([userId, date])
+}
