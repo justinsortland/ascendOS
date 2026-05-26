@@ -8,10 +8,15 @@ import {
 } from '@/lib/body-mock-data'
 import type { MorningHabit, BodyMeal, WorkoutSession, MacroTargets } from '@/lib/types'
 
-export async function getHabits(): Promise<MorningHabit[]> {
+export type HabitsResult = { habits: MorningHabit[]; source: 'db' | 'mock' }
+
+export async function getHabits(): Promise<HabitsResult> {
   try {
     const dbHabits = await prisma.habit.findMany({ orderBy: { createdAt: 'asc' } })
-    if (dbHabits.length === 0) return initialHabits
+    if (dbHabits.length === 0) {
+      console.warn('[body/data] getHabits: DB returned 0 rows → mock fallback. Run `npm run db:seed`.')
+      return { habits: initialHabits, source: 'mock' }
+    }
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -23,18 +28,23 @@ export async function getHabits(): Promise<MorningHabit[]> {
     })
     const completedIds = new Set(completions.map((c: { habitId: string }) => c.habitId))
 
-    return dbHabits.map((h) => ({
-      id: h.id,
-      label: h.label,
-      tier: h.tier as MorningHabit['tier'],
-      tierLabel: h.tierLabel,
-      streak: h.streak,
-      duration: h.duration,
-      description: h.description,
-      completed: completedIds.has(h.id),
-    }))
-  } catch {
-    return initialHabits
+    console.log(`[body/data] getHabits: ${dbHabits.length} habits from DB`)
+    return {
+      source: 'db',
+      habits: dbHabits.map((h) => ({
+        id: h.id,
+        label: h.label,
+        tier: h.tier as MorningHabit['tier'],
+        tierLabel: h.tierLabel,
+        streak: h.streak,
+        duration: h.duration,
+        description: h.description,
+        completed: completedIds.has(h.id),
+      })),
+    }
+  } catch (e) {
+    console.error('[body/data] getHabits: DB error → mock fallback:', e)
+    return { habits: initialHabits, source: 'mock' }
   }
 }
 

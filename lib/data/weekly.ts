@@ -100,15 +100,21 @@ export async function getWeeklyReviews(): Promise<WeeklyReviewEntry[]> {
 export async function getWeeklyMeta() {
   try {
     const plan = await prisma.weeklyPlan.findFirst({ orderBy: { weekStart: 'desc' } })
-    if (!plan) return { weekRange: CURRENT_WEEK, rank: WEEKLY_RANK, mainFocus: MAIN_FOCUS, theme: 'Cut Cleanly' }
+    if (!plan) {
+      console.warn('[weekly/data] getWeeklyMeta: No weekly plan found → mock fallback.')
+      return { weekRange: CURRENT_WEEK, rank: WEEKLY_RANK, mainFocus: MAIN_FOCUS, theme: 'Cut Cleanly', source: 'mock' as const }
+    }
 
+    console.log(`[weekly/data] getWeeklyMeta: plan id="${plan.id}" theme="${plan.theme}"`)
     return {
       weekRange: `${plan.weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}–${plan.weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
       rank: WEEKLY_RANK,
       mainFocus: plan.mainFocus,
       theme: plan.theme,
+      source: 'db' as const,
     }
-  } catch {
-    return { weekRange: CURRENT_WEEK, rank: WEEKLY_RANK, mainFocus: MAIN_FOCUS, theme: 'Cut Cleanly' }
+  } catch (e) {
+    console.error('[weekly/data] getWeeklyMeta: DB error → mock fallback:', e)
+    return { weekRange: CURRENT_WEEK, rank: WEEKLY_RANK, mainFocus: MAIN_FOCUS, theme: 'Cut Cleanly', source: 'mock' as const }
   }
 }

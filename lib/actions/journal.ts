@@ -32,17 +32,25 @@ export async function saveDreamEntry(data: {
   dreamSigns: string[]
   realityCheckDone: boolean
   lucidityAchieved: boolean
-}) {
+}): Promise<{ success: boolean; error?: string }> {
   try {
     const user = await prisma.user.findFirst()
-    if (!user) return
+    if (!user) return { success: false, error: 'No user found in database' }
 
-    await prisma.dreamEntry.create({
+    const created = await prisma.dreamEntry.create({
       data: { ...data, userId: user.id, date: new Date() },
     })
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[journal/action] saveDreamEntry: created id="${created.id}" title="${created.title}"`)
+    }
+
     revalidatePath('/spirit')
+    return { success: true }
   } catch (e) {
-    console.error('saveDreamEntry failed:', e)
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[journal/action] saveDreamEntry failed:', msg)
+    return { success: false, error: msg }
   }
 }
 
