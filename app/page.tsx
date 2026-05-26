@@ -1,4 +1,6 @@
 import { DashboardShell } from '@/components/dashboard/DashboardShell'
+
+export const dynamic = 'force-dynamic'
 import { getDashboardTasks, getBonusQuests, getDailyMission, getUserStats } from '@/lib/data/dashboard'
 
 export default async function DashboardPage() {

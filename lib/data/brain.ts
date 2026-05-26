@@ -33,24 +33,42 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
-export async function getLeetCodeProblems(): Promise<LeetCodeProblem[]> {
+export type LeetCodeResult = {
+  problems: LeetCodeProblem[]
+  source: 'db' | 'mock'
+}
+
+export async function getLeetCodeProblems(): Promise<LeetCodeResult> {
   try {
     const dbProblems = await prisma.leetCodeProblem.findMany({ orderBy: { createdAt: 'asc' } })
-    if (dbProblems.length === 0) return initialLeetCodeProblems
 
-    return dbProblems.map((p) => ({
-      id: p.id,
-      title: p.title,
-      difficulty: p.difficulty as LeetCodeProblem['difficulty'],
-      pattern: p.pattern,
-      status: p.status as LeetCodeProblem['status'],
-      timeMins: p.timeMins ?? undefined,
-      notes: p.notes ?? undefined,
-      url: p.url ?? undefined,
-      solvedDate: p.solvedDate ?? undefined,
-    }))
-  } catch {
-    return initialLeetCodeProblems
+    if (dbProblems.length === 0) {
+      console.warn('[brain/data] getLeetCodeProblems: DB returned 0 rows → mock fallback. Run `npm run db:seed`.')
+      return { problems: initialLeetCodeProblems, source: 'mock' }
+    }
+
+    console.log(
+      `[brain/data] getLeetCodeProblems: ${dbProblems.length} rows from DB` +
+      ` (ids: ${dbProblems.slice(0, 3).map(p => p.id).join(', ')}...)`
+    )
+
+    return {
+      source: 'db',
+      problems: dbProblems.map((p) => ({
+        id: p.id,
+        title: p.title,
+        difficulty: p.difficulty as LeetCodeProblem['difficulty'],
+        pattern: p.pattern,
+        status: p.status as LeetCodeProblem['status'],
+        timeMins: p.timeMins ?? undefined,
+        notes: p.notes ?? undefined,
+        url: p.url ?? undefined,
+        solvedDate: p.solvedDate ?? undefined,
+      })),
+    }
+  } catch (e) {
+    console.error('[brain/data] getLeetCodeProblems: DB error → mock fallback:', e)
+    return { problems: initialLeetCodeProblems, source: 'mock' }
   }
 }
 

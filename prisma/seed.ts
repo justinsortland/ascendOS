@@ -20,6 +20,15 @@ async function main() {
   })
   console.log('User:', user.id)
 
+  // ─── Clear volatile tables so seed is idempotent ─────────────────
+  await prisma.task.deleteMany({ where: { userId: user.id } })
+  await prisma.bonusQuest.deleteMany({ where: { userId: user.id } })
+  await prisma.habit.deleteMany({ where: { userId: user.id } })
+  await prisma.project.deleteMany({ where: { userId: user.id } })
+  await prisma.learningTrack.deleteMany({ where: { userId: user.id } })
+  await prisma.book.deleteMany({ where: { userId: user.id } })
+  await prisma.vocabCard.deleteMany({ where: { userId: user.id } })
+
   // ─── Tasks ───────────────────────────────────────────────────────
   const today = new Date()
 
@@ -131,22 +140,28 @@ async function main() {
   }
 
   // ─── LeetCode Problems ───────────────────────────────────────────
+  // Delete any existing problems for this user so the seed is idempotent
+  await prisma.leetCodeProblem.deleteMany({ where: { userId: user.id } })
+
+  // These exactly match initialLeetCodeProblems in lib/brain-mock-data.ts
+  // so the UI titles and the DB titles are always in sync.
   const lcData = [
-    { title: 'Two Sum', difficulty: 'easy', pattern: 'Hash Map', status: 'mastered', timeMins: 4, solvedDate: '2026-05-10', url: 'https://leetcode.com/problems/two-sum/' },
-    { title: 'Best Time to Buy and Sell Stock', difficulty: 'easy', pattern: 'Sliding Window', status: 'mastered', timeMins: 6, solvedDate: '2026-05-11', url: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/' },
-    { title: 'Longest Substring Without Repeating Characters', difficulty: 'medium', pattern: 'Sliding Window', status: 'solved-independent', timeMins: 18, solvedDate: '2026-05-14', url: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/' },
-    { title: 'Valid Parentheses', difficulty: 'easy', pattern: 'Stack', status: 'mastered', timeMins: 7, solvedDate: '2026-05-12', url: 'https://leetcode.com/problems/valid-parentheses/' },
-    { title: 'Merge Two Sorted Lists', difficulty: 'easy', pattern: 'Linked List', status: 'solved-help', timeMins: 14, solvedDate: '2026-05-13', url: 'https://leetcode.com/problems/merge-two-sorted-lists/' },
-    { title: 'Binary Tree Inorder Traversal', difficulty: 'easy', pattern: 'DFS', status: 'solved-independent', timeMins: 10, solvedDate: '2026-05-15', url: 'https://leetcode.com/problems/binary-tree-inorder-traversal/' },
-    { title: 'Climbing Stairs', difficulty: 'easy', pattern: 'Dynamic Programming', status: 'mastered', timeMins: 5, solvedDate: '2026-05-16', url: 'https://leetcode.com/problems/climbing-stairs/' },
-    { title: 'Maximum Subarray', difficulty: 'medium', pattern: 'Dynamic Programming', status: 'solved-independent', timeMins: 20, solvedDate: '2026-05-17', url: 'https://leetcode.com/problems/maximum-subarray/' },
-    { title: 'Number of Islands', difficulty: 'medium', pattern: 'BFS / DFS', status: 'revisit', timeMins: 35, solvedDate: '2026-05-19', notes: 'BFS version was shaky, revisit', url: 'https://leetcode.com/problems/number-of-islands/' },
-    { title: 'Word Break', difficulty: 'medium', pattern: 'Dynamic Programming', status: 'attempted', timeMins: 45, notes: 'Memo DP not working — try bottom-up', url: 'https://leetcode.com/problems/word-break/' },
-    { title: 'Median of Two Sorted Arrays', difficulty: 'hard', pattern: 'Binary Search', status: 'not-started', url: 'https://leetcode.com/problems/median-of-two-sorted-arrays/' },
+    { title: 'Two Sum',                          difficulty: 'easy',   pattern: 'Array / HashMap',           status: 'mastered',          timeMins: 8,  solvedDate: '2026-05-19' },
+    { title: 'Valid Parentheses',                difficulty: 'easy',   pattern: 'Stack',                     status: 'mastered',          timeMins: 10, solvedDate: '2026-05-19' },
+    { title: 'Merge Intervals',                  difficulty: 'medium', pattern: 'Intervals / Sorting',       status: 'solved-help',        timeMins: 35, solvedDate: '2026-05-20', notes: 'Missed edge case: overlapping at boundary' },
+    { title: 'Task Scheduler',                   difficulty: 'medium', pattern: 'Heap / Greedy',             status: 'solved-help',        timeMins: 50, solvedDate: '2026-05-21', notes: 'Needed hint on idle slot calculation' },
+    { title: 'Binary Tree Level Order Traversal',difficulty: 'medium', pattern: 'BFS / Tree',                status: 'solved-independent', timeMins: 22, solvedDate: '2026-05-22' },
+    { title: 'Longest Increasing Subsequence',   difficulty: 'medium', pattern: 'Dynamic Programming',      status: 'attempted',          timeMins: 60, solvedDate: '2026-05-22', notes: 'Got O(n²) solution, could not optimize to O(n log n)' },
+    { title: 'Meeting Rooms III',                difficulty: 'hard',   pattern: 'Heap / Interval Simulation',status: 'revisit',            url: 'https://leetcode.com', notes: 'Struggled with event ordering and room allocation logic' },
+    { title: 'Reorganize String',                difficulty: 'medium', pattern: 'Heap / Greedy',             status: 'revisit',            notes: 'Max heap pattern not fully internalized' },
+    { title: 'Non-overlapping Intervals',        difficulty: 'medium', pattern: 'Greedy / Intervals',        status: 'revisit',            notes: 'Greedy selection criterion needs review' },
+    { title: 'IPO',                              difficulty: 'hard',   pattern: 'Heap / Greedy',             status: 'revisit',            notes: 'Two-heap approach not yet solid' },
+    { title: 'Cheapest Flights Within K Stops',  difficulty: 'medium', pattern: 'Graph / BFS / Bellman-Ford',status: 'revisit',            notes: 'Confused Bellman-Ford with Dijkstra constraints' },
   ]
   for (const lc of lcData) {
     await prisma.leetCodeProblem.create({ data: { ...lc, userId: user.id } })
   }
+  console.log(`LeetCode: seeded ${lcData.length} problems`)
 
   // ─── Learning Tracks ─────────────────────────────────────────────
   const trackData = [
